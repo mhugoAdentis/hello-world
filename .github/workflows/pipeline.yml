@@ -38,9 +38,14 @@ jobs:
       - name: Test application
         run: |
           curl --retry 10 \
-            --retry-connrefused \
+            --retry-all-errors \
             --retry-delay 2 \
+            --max-time 5 \
             -fsS http://localhost:8080 | grep "Hello World"
+
+      - name: Show container logs on failure
+        if: failure()
+        run: docker logs hello-web
 
       - name: Stop and remove container
         if: always()
